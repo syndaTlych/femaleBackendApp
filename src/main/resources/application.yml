@@ -1,0 +1,51 @@
+
+server:
+  port: 8081
+lombok:
+  addLombokGeneratedAnnotation=true
+spring:
+  application:
+    name: female
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/female?createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantZoneShift&useLegacyDateTimeCode=false&serverTimeZone=UTC
+    username: root
+    password: ""
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+
+  security:
+    oauth2:
+       client:
+         registration:
+           demo:
+             client-id: flutter
+             #client-secret: NSp5IW5GVVc5ldVpQm2IfgPgaOsXinpA
+             scope: openid , profile , email
+             authorization-grant-type: client-credentials
+         provider:
+           keycloak:
+             issuer-uri: http://localhost:8086/realms/master
+             token-uri: http://localhost:8086/realms/master/protocol/openid-connect/token
+             authorization-uri: http://localhost:8086/realms/master/protocol/openid-connect/auth
+             user-info-uri: http://localhost:8086/realms/master/protocol/openid-connect/userinfo
+             jwk-set-uri: http://localhost:8086/realms/master/protocol/openid-connect/certs
+
+access:
+  control:
+    origin: http://localhost:5000
+logging:
+  level:
+    org.springframework.security: trace
+
+
+
+
+
