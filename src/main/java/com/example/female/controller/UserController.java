@@ -1,5 +1,6 @@
 package com.example.female.controller;
 
+import com.example.female.dto.RegisterRequest;
 import com.example.female.entities.UserEntity;
 import com.example.female.services.KeycloakAdminClientInterface;
 import com.example.female.services.UserInterface;
@@ -30,9 +31,11 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody SignupRequest request) {
+    public ResponseEntity<String> signup(@RequestBody UserEntity request) {
         try {
-            keycloakService.createUser(request.getUsername(), request.getPassword());
+            System.out.println("Signup request: " + request.getUsername() + " " + request.getPassword());
+
+            userint.addUser(request);
             return ResponseEntity.ok("User created successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -51,7 +54,8 @@ public class UserController {
 
     @PostMapping("/add")
     public UserEntity addUser(@RequestBody UserEntity user) {
-        return userint.addUser(user);
+//        return userint.addUser(user);
+        return null;
     }
 
     @DeleteMapping("/delete/{id}")

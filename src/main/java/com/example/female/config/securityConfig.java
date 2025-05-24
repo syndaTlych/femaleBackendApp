@@ -4,8 +4,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -44,31 +46,44 @@ public class securityConfig {
         return authenticationConverter;
     }
 
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
+//        MvcRequestMatcher.Builder mvc = new MvcRequestMatcher.Builder(introspector);
+//
+//        http
+//                .csrf(AbstractHttpConfigurer::disable)
+////                .cors(cors -> cors.configurationSource())
+//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .authorizeHttpRequests(auth -> auth
+////                        .requestMatchers(mvc.pattern(HttpMethod.OPTIONS, "/**")).permitAll()
+////                        .requestMatchers(mvc.pattern("/auth/register")).permitAll()   // <--- autoriser sans auth
+////                        .requestMatchers(mvc.pattern("/auth/google")).permitAll()     // <--- autoriser sans auth
+////                        .requestMatchers(mvc.pattern(HttpMethod.GET, "/user/getallusers")).hasRole("admin")
+////                        .requestMatchers(mvc.pattern("/admin/**")).hasRole("admin")
+//                        .anyRequest().permitAll()
+//                );
+////                .oauth2ResourceServer(oauth2 -> oauth2
+////                        .jwt(jwt -> jwt
+////                                .decoder(jwtDecoder())
+////                                .jwtAuthenticationConverter(jwtAuthenticationConverter())
+////                        )
+////
+////                );
+//
+//        return http.build();
+//    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
-        MvcRequestMatcher.Builder mvc = new MvcRequestMatcher.Builder(introspector);
-
         http
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.disable())
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults()) // ✅ Active la configuration CORS définie dans WebMvcConfigurer
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(mvc.pattern(HttpMethod.OPTIONS, "/**")).permitAll()
-                        .requestMatchers(mvc.pattern("/auth/register")).permitAll()   // <--- autoriser sans auth
-                        .requestMatchers(mvc.pattern("/auth/google")).permitAll()     // <--- autoriser sans auth
-                        .requestMatchers(mvc.pattern(HttpMethod.GET, "/user/getallusers")).hasRole("admin")
-                        .requestMatchers(mvc.pattern("/admin/**")).hasRole("admin")
-                        .anyRequest().authenticated()
-                )
-                .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> jwt
-                                .decoder(jwtDecoder())
-                                .jwtAuthenticationConverter(jwtAuthenticationConverter())
-                        )
-
+                        .anyRequest().permitAll() // ✅ Toutes les requêtes sont autorisées, aucune authentification requise
                 );
 
         return http.build();
     }
+
 }

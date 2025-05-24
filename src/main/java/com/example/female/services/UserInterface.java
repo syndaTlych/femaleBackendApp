@@ -1,5 +1,6 @@
 package com.example.female.services;
 
+import com.example.female.dto.RegisterRequest;
 import com.example.female.entities.UserEntity;
 
 import java.util.List;
